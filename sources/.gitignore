@@ -3,3 +3,5 @@ bin/
 obj/
 *.suo
 *.user
+
+/RequestR.Extensions.Autofac/DustInTheWind.RequestR.Extensions.Autofac.xml
