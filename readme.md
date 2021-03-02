@@ -6,7 +6,7 @@
 
 **Note**: Include `RequestR.Extensions.Autofac` nuget package.
 
-```charp
+```csharp
 ContainerBuilder containerBuilder = new ContainerBuilder();
 containerBuilder.AddRequestBus();
 ```
@@ -15,7 +15,7 @@ containerBuilder.AddRequestBus();
 
 Retrieve the `RequestBus` instance and call the `RegisterAllHandlers()` method.
 
-```charp
+```csharp
 RequestBus requestBus = container.Resolve<RequestBus>();
 requestBus.RegisterAllHandlers();
 ```
