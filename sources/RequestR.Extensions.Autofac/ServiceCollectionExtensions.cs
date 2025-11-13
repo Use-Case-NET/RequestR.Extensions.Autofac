@@ -14,38 +14,41 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
-using System.Reflection;
 using Autofac;
 
-namespace DustInTheWind.RequestR.Extensions.Autofac
+namespace DustInTheWind.RequestR.Extensions.Autofac;
+
+public static class ServiceCollectionExtensions
 {
-    public static class ServiceCollectionExtensions
+    public static void RegisterUseCaseEngine(this ContainerBuilder containerBuilder, Action<UseCaseEngineOptions> setupOptions)
     {
-        public static void AddRequestBus(this ContainerBuilder containerBuilder)
-        {
-            //containerBuilder.RegisterInstance(kernel).As<IServiceProvider>();
-            containerBuilder.RegisterType<RequestHandlerFactory>().As<IRequestHandlerFactory>();
-            containerBuilder.RegisterType<RequestBus>().AsSelf().SingleInstance();
-            containerBuilder.AddAllHandlersAndValidators();
-        }
+        if (setupOptions is null) throw new ArgumentNullException(nameof(setupOptions));
 
-        private static void AddAllHandlersAndValidators(this ContainerBuilder kernel)
-        {
-            if (kernel == null) throw new ArgumentNullException(nameof(kernel));
+        UseCaseEngineOptions options = new();
+        setupOptions(options);
 
-            AppDomain appDomain = AppDomain.CurrentDomain;
+        containerBuilder.RegisterType<UseCaseFactory>().As<UseCaseFactoryBase>();
 
-            Assembly[] assemblies = appDomain.GetAssemblies();
-
-            foreach (Assembly assembly in assemblies)
+        containerBuilder
+            .Register(context =>
             {
-                IEnumerable<Type> requestHandlersOrValidators = assembly.GetAllRequestHandlersOrValidators();
+                UseCaseFactoryBase useCaseFactory = context.Resolve<UseCaseFactoryBase>();
+                RequestBus requestBus = new(useCaseFactory);
 
-                foreach (Type handlerOrValidatorType in requestHandlersOrValidators)
-                    kernel.RegisterType(handlerOrValidatorType).AsSelf();
-            }
-        }
+                foreach (Type useCaseType in options.UseCaseTypes)
+                    requestBus.RegisterUseCase(useCaseType);
+
+                foreach (Type validatorType in options.ValidatorTypes)
+                    requestBus.RegisterValidator(validatorType);
+
+                return requestBus;
+            })
+            .AsSelf();
+
+        foreach (Type useCaseType in options.UseCaseTypes)
+            containerBuilder.RegisterType(useCaseType);
+
+        foreach (Type validatorType in options.ValidatorTypes)
+            containerBuilder.RegisterType(validatorType);
     }
 }

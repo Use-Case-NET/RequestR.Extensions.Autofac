@@ -14,40 +14,37 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-using System;
-using System.Collections.Generic;
 using Autofac;
-using DustInTheWind.RequestR.Demo.Autofac.PresentProducts;
+using DustInTheWind.RequestR.Demo.PresentProducts;
 using DustInTheWind.RequestR.Extensions.Autofac;
 
-namespace DustInTheWind.RequestR.Demo.Autofac
+namespace DustInTheWind.RequestR.Demo;
+
+internal class Program
 {
-    internal class Program
+    private static void Main(string[] args)
     {
-        private static void Main(string[] args)
+        // Setup services
+        ContainerBuilder containerBuilder = new();
+        containerBuilder.RegisterUseCaseEngine(options =>
         {
-            // Setup services
-            ContainerBuilder containerBuilder = new ContainerBuilder();
-            containerBuilder.AddRequestBus();
+            options.AddFromAssemblyContaining<PresentProductsRequest>();
+        });
 
-            IContainer container = containerBuilder.Build();
+        IContainer container = containerBuilder.Build();
 
-            // Setup request bus
-            RequestBus requestBus = container.Resolve<RequestBus>();
-            requestBus.RegisterAllHandlers();
+        // Send request
+        RequestBus requestBus = container.Resolve<RequestBus>();
+        PresentProductsRequest request = new();
+        List<Product> products = requestBus.Process<PresentProductsRequest, List<Product>>(request);
 
-            // Send request
-            PresentProductsRequest request = new PresentProductsRequest();
-            List<Product> products = requestBus.Send<PresentProductsRequest, List<Product>>(request);
-
-            // Display response
-            foreach (Product product in products)
-            {
-                Console.WriteLine();
-                Console.WriteLine("Product: " + product.Name);
-                Console.WriteLine("Price: " + product.Price);
-                Console.WriteLine("Quantity: " + product.Quantity);
-            }
+        // Display response
+        foreach (Product product in products)
+        {
+            Console.WriteLine();
+            Console.WriteLine("Product: " + product.Name);
+            Console.WriteLine("Price: " + product.Price);
+            Console.WriteLine("Quantity: " + product.Quantity);
         }
     }
 }

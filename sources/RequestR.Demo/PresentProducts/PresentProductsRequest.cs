@@ -14,9 +14,8 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-namespace DustInTheWind.RequestR.Demo.Autofac.PresentProducts
+namespace DustInTheWind.RequestR.Demo.PresentProducts;
+
+public class PresentProductsRequest
 {
-    internal class PresentProductsRequest
-    {
-    }
 }

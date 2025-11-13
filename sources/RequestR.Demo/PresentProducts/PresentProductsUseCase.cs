@@ -16,9 +16,30 @@
 
 namespace DustInTheWind.RequestR.Demo.PresentProducts;
 
-internal class PresentProductsRequestValidator : IRequestValidator<PresentProductsRequest>
+internal class PresentProductsUseCase : IUseCase<PresentProductsRequest, List<Product>>
 {
-    public void Validate(PresentProductsRequest request)
+    public async Task<List<Product>> Execute(PresentProductsRequest request, CancellationToken cancellationToken)
     {
+        return
+        [
+            new Product
+            {
+                Name = "Chocolate",
+                Price = 10,
+                Quantity = 15
+            },
+            new Product
+            {
+                Name = "Potato Chips",
+                Price = 2,
+                Quantity = 7
+            },
+            new Product
+            {
+                Name = "Water",
+                Price = 5,
+                Quantity = 10
+            }
+        ];
     }
 }

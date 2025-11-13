@@ -1,14 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
-        <OutputType>Exe</OutputType>
-        <TargetFramework>net5.0</TargetFramework>
-        <AssemblyName>DustInTheWind.RequestR.Demo.Autofac</AssemblyName>
-        <RootNamespace>DustInTheWind.RequestR.Demo.Autofac</RootNamespace>
-    </PropertyGroup>
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net8.0</TargetFramework>
+		<AssemblyName>DustInTheWind.$(MSBuildProjectName)</AssemblyName>
+		<RootNamespace>DustInTheWind.$(MSBuildProjectName.Replace(" ", "_"))</RootNamespace>
+	</PropertyGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\RequestR.Extensions.Autofac\RequestR.Extensions.Autofac.csproj" />
-    </ItemGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\RequestR.Extensions.Autofac\RequestR.Extensions.Autofac.csproj" />
+	</ItemGroup>
 
 </Project>
